@@ -6,12 +6,12 @@ type ConfigStruct struct {
 }
 
 type RedisStruct struct {
-	Address    string `yaml:"address"`
-	Password   string `yaml:"password"`
-	Database   int    `yaml:"database"`
-	Prefix     string `yaml:"prefix"`
-	MaxIdel    int    `yaml:"maxIdel"`
-	MaxActicve int    `yaml:"maxActive"`
+	Address   string `yaml:"address"`
+	Password  string `yaml:"password"`
+	Database  int    `yaml:"database"`
+	Prefix    string `yaml:"prefix"`
+	MaxIdle   int    `yaml:"maxIdle"`
+	MaxActive int    `yaml:"maxActive"`
 }
 
 type ServerStruct struct {

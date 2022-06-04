@@ -1,11 +1,15 @@
 package main
 
 import (
-	"log"
-
-	_ "github.com/soxft/time-counter/config"
+	"github.com/gin-gonic/gin"
+	"github.com/soxft/time-counter/app/controller"
+	"github.com/soxft/time-counter/process/redisutil"
 )
 
 func main() {
-	log.Println("hello world")
+	// init redis
+	redisutil.Init()
+
+	r := gin.New()
+	r.GET("/ping", controller.Ping)
 }

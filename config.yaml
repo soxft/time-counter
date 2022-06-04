@@ -9,5 +9,5 @@ redis:
   password:
   database: 1
   prefix: tc
-  maxIdel: 10
-  maxActicve: 500
+  maxIdle: 10
+  maxActive: 500
