@@ -18,5 +18,5 @@ type ServerStruct struct {
 	Address string `yaml:"address"`
 	Debug   string `yaml:"debug"`
 	Log     string `yaml:"log"`
-	server  string `yaml:"server"`
+	Server  string `yaml:"server"`
 }
