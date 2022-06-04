@@ -18,6 +18,7 @@ func main() {
 	r := gin.New()
 	{
 		r.GET("/ping", controller.Ping)
+		r.NoRoute(controller.NotFound)
 	}
 
 	// run service
