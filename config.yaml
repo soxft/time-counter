@@ -1,0 +1,13 @@
+server:
+  address: 0.0.0.0:8080
+  debug: true
+  log: true
+  server: "time-counter"
+
+redis:
+  address: 127.0.0.1:6379
+  password:
+  database: 1
+  prefix: tc
+  maxIdel: 10
+  maxActicve: 500
