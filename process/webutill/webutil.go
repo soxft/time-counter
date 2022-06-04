@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/soxft/time-counter/app/middleware"
 	"github.com/soxft/time-counter/config"
 )
 
@@ -20,6 +21,7 @@ func Init() {
 		r.Use(gin.Logger())
 	}
 	r.Use(gin.Recovery())
+	r.Use(middleware.Cors())
 
 	//init router
 	initRoute(r)

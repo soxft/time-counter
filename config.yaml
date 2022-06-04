@@ -3,6 +3,8 @@ server:
   debug: true
   log: true
   server: "time-counter"
+  interval: 10
+  cors: "*"
 
 redis:
   address: 127.0.0.1:6379

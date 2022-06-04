@@ -15,8 +15,10 @@ type RedisStruct struct {
 }
 
 type ServerStruct struct {
-	Address string `yaml:"address"`
-	Debug   bool   `yaml:"debug"`
-	Log     bool   `yaml:"log"`
-	Server  string `yaml:"server"`
+	Address  string `yaml:"address"`
+	Debug    bool   `yaml:"debug"`
+	Log      bool   `yaml:"log"`
+	Server   string `yaml:"server"`
+	Interval string `yaml:"interval"`
+	Cors     string `yaml:"cors"`
 }
