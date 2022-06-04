@@ -1,6 +1,10 @@
 package apiutil
 
-import "github.com/gin-gonic/gin"
+import (
+	"log"
+
+	"github.com/gin-gonic/gin"
+)
 
 func New(ctx *gin.Context) *Api {
 	return &Api{
@@ -32,16 +36,7 @@ func (c *Api) FailWithData(msg string, data interface{}) {
 	c.Out(false, msg, data)
 }
 
-func (c *Api) Abort(httpCode int, msg string, errorCode int) {
-	c.Ctx.AbortWithStatusJSON(httpCode, gin.H{
-		"success": false,
-		"message": msg,
-		"data": gin.H{
-			"errorCode": errorCode,
-		},
-	})
-}
-
-func (c *Api) Abort401(msg string, errorCode int) {
-	c.Abort(401, msg, errorCode)
+func (c *Api) FailWithError(msg string, err error) {
+	c.Out(false, msg, gin.H{})
+	log.Print(err)
 }
