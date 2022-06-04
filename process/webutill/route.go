@@ -7,6 +7,7 @@ import (
 
 func initRoute(r *gin.Engine) {
 	{
+		r.POST("/counter", controller.Counter)
 		r.GET("/ping", controller.Ping)
 		r.NoRoute(controller.NotFound)
 	}
