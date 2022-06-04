@@ -7,5 +7,5 @@ import (
 
 func Ping(c *gin.Context) {
 	api := apiutil.New(c)
-	api.Success("success")
+	api.Success("pong")
 }
