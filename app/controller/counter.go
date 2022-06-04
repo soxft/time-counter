@@ -66,7 +66,7 @@ func Counter(c *gin.Context) {
 	}
 
 	api.SuccessWithData("success", gin.H{
-		"count":       counts,
+		"online_user": counts,
 		"online_time": online,
 	})
 }
