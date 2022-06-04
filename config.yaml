@@ -3,7 +3,7 @@ server:
   debug: true
   log: true
   server: "time-counter"
-  interval: 10
+  interval: 5
   cors: "*"
 
 redis:

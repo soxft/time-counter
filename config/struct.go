@@ -19,6 +19,6 @@ type ServerStruct struct {
 	Debug    bool   `yaml:"debug"`
 	Log      bool   `yaml:"log"`
 	Server   string `yaml:"server"`
-	Interval string `yaml:"interval"`
+	Interval int64    `yaml:"interval"`
 	Cors     string `yaml:"cors"`
 }

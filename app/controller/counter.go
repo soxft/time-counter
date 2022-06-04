@@ -25,5 +25,4 @@ func Counter(c *gin.Context) {
 	// get counter
 	_, _ = redis.Do("ZADD", rPrefix+":counter", time.Now().Unix(), userIdentity)
 	api.SuccessWithData("", gin.H{})
-	return
 }
