@@ -1,7 +1,6 @@
 package cronutil
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -14,7 +13,7 @@ func Init() {
 	c := cron.New()
 
 	// auto remove counter
-	c.AddFunc(fmt.Sprintf("@every %ds", config.Server.Interval), func() {
+	c.AddFunc("@every 1m", func() {
 		defer func() {
 			if err := recover(); err != nil {
 				log.Printf("cronutil.Init() error: %s", err)
