@@ -1,2 +1,3 @@
 ## time-counter
-> a simple online user/time counter
+
+> just a simple online user/time counter
