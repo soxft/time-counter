@@ -10,32 +10,6 @@
 <body style="padding: 4em">
     <p>online user: <span style="color: red;" id="online_user"></span></p>
     <p>total online time: <span style="color: red;" id="online_time"></span></p>
-    <script>
-        function loop() {
-            $.ajax({
-                url: '/counter',
-                type: 'GET',
-                success: function (res) {
-                    if (res.success === true) {
-                        $('#online_user').text(res.data.online_user)
-                        $('#online_time').text(formatTime(res.data.online_time))
-                    } else {
-                        alert(res.message)
-                    }
-                }
-            });
-        }
-
-        loop();
-        setInterval(loop, 1000);
-
-        function formatTime(time) {
-            var h = parseInt(time / 3600)
-            var m = parseInt((time - h * 3600) / 60)
-            var s = time - h * 3600 - m * 60
-            return h + 'h ' + m + 'm ' + s + "s"
-        }
-    </script>
 </body>
 
 </html>
