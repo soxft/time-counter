@@ -3,7 +3,7 @@ const webpack = require('webpack');
 module.exports = {
     entry: './counter.ts',
     output: {
-        filename: 'counter.min.js',
+        filename: 'counter.js',
         path: path.resolve(__dirname, './')
     },
     mode: 'production',

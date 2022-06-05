@@ -8,6 +8,8 @@ import (
 func initRoute(r *gin.Engine) {
 	{
 		r.StaticFile("/", "dist/index.html")
+		r.StaticFile("/counter.js", "dist/counter.js")
+
 		r.GET("/counter", controller.Counter)
 		r.GET("/ping", controller.Ping)
 		r.NoRoute(controller.NotFound)

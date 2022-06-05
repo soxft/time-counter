@@ -41,18 +41,16 @@ func Counter(c *gin.Context) {
 		}
 	}
 
-	var online int
+	var onlineTotal int
 	if last != 0 {
 		incr = timeNow - int64(last)
-		if online, err = incrOnlineTime(incr, redis); err != nil {
+		if onlineTotal, err = incrOnlineTime(incr, redis); err != nil {
 			api.FailWithError("system error", err)
 			return
 		}
-	} else {
-		if online, err = getOnlineTime(redis); err != nil && err != redi.ErrNil {
-			api.FailWithError("system error", err)
-			return
-		}
+	} else if onlineTotal, err = getOnlineTime(redis); err != nil && err != redi.ErrNil {
+		api.FailWithError("system error", err)
+		return
 	}
 
 	// insert counter
@@ -66,8 +64,8 @@ func Counter(c *gin.Context) {
 	}
 
 	api.SuccessWithData("success", gin.H{
-		"online_user": counts,
-		"online_time": online,
+		"online_user":  counts,
+		"online_total": onlineTotal,
 	})
 }
 
