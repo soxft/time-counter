@@ -23,7 +23,7 @@ func Cors() gin.HandlerFunc {
 		// token
 		token := c.Request.Header.Get("Authorization")
 		if token == "" {
-			token = toolutil.Md5(c.ClientIP() + ":" + c.Request.UserAgent())
+			token = toolutil.Md5(c.ClientIP()) + "." + toolutil.Md5(c.Request.UserAgent())
 			c.Writer.Header().Set("Access-Control-Expose-Headers", "Set-Token")
 			c.Writer.Header().Set("Set-Token", token)
 		} else {
