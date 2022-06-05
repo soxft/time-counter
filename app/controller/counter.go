@@ -9,18 +9,12 @@ import (
 	"github.com/soxft/time-counter/config"
 	"github.com/soxft/time-counter/process/redisutil"
 	"github.com/soxft/time-counter/utils/apiutil"
-	"github.com/soxft/time-counter/utils/toolutil"
 )
 
 func Counter(c *gin.Context) {
 	api := apiutil.New(c)
 
-	_userIp := c.ClientIP()
-	_userAgent := c.Request.UserAgent()
 	userIdentity := c.GetString("user_identity")
-	if userIdentity == "" {
-		userIdentity = toolutil.Md5(_userIp + ":" + _userAgent)
-	}
 
 	// redis
 	redis := redisutil.R.Get()

@@ -17,14 +17,13 @@ func Cors() gin.HandlerFunc {
 			c.Writer.Header().Set("Access-Control-Allow-Headers", "OPTION, HEAD, "+c.Request.Header.Get("Access-Control-Request-Headers"))
 			c.Writer.Header().Set("Access-Control-Max-Age", "86400")
 			c.AbortWithStatus(204)
+			return
 		}
 
 		// token
 		token := c.Request.Header.Get("Authorization")
 		if token == "" {
-			_userIp := c.ClientIP()
-			_userAgent := c.Request.UserAgent()
-			token = toolutil.GenerateToken(_userIp, _userAgent)
+			token = toolutil.Md5(c.ClientIP() + ":" + c.Request.UserAgent())
 			c.Writer.Header().Set("Access-Control-Expose-Headers", "Set-Token")
 			c.Writer.Header().Set("Set-Token", token)
 		} else {
