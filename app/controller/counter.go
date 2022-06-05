@@ -26,7 +26,7 @@ func Counter(c *gin.Context) {
 	timeNow := time.Now().Unix()
 	past := timeNow - config.Server.Interval
 
-	// incr online time
+	// incr and get total online time
 	var last int
 	var incr int64
 	var err error
@@ -39,15 +39,26 @@ func Counter(c *gin.Context) {
 	}
 
 	var onlineTotal int
+	var onlineUser int
 	if last != 0 {
 		incr = timeNow - int64(last)
-		if onlineTotal, err = incrOnlineTime(incr, redis); err != nil {
+		if onlineTotal, err = incrTotalOnline(redis, incr); err != nil {
 			api.FailWithError("system error", err)
 			return
 		}
-	} else if onlineTotal, err = getOnlineTime(redis); err != nil && err != redi.ErrNil {
-		api.FailWithError("system error", err)
-		return
+		if onlineUser, err = incrUserOnline(redis, userIdentity, incr); err != nil {
+			api.FailWithError("system error", err)
+			return
+		}
+	} else {
+		if onlineTotal, err = getTotalOnline(redis); err != nil && err != redi.ErrNil {
+			api.FailWithError("system error", err)
+			return
+		}
+		if onlineUser, err = getUserOnline(redis, userIdentity); err != nil && err != redi.ErrNil {
+			api.FailWithError("system error", err)
+			return
+		}
 	}
 
 	// insert counter
@@ -63,13 +74,22 @@ func Counter(c *gin.Context) {
 	api.SuccessWithData("success", gin.H{
 		"online_user":  counts,
 		"online_total": onlineTotal,
+		"online_me":    onlineUser,
 	})
 }
 
-func incrOnlineTime(incr int64, redis redi.Conn) (int, error) {
+func incrTotalOnline(redis redi.Conn, incr int64) (int, error) {
 	return redi.Int(redis.Do("INCRBY", config.Redis.Prefix+":online_time", incr))
 }
 
-func getOnlineTime(redis redi.Conn) (int, error) {
+func getTotalOnline(redis redi.Conn) (int, error) {
 	return redi.Int(redis.Do("get", config.Redis.Prefix+":online_time"))
+}
+
+func incrUserOnline(redis redi.Conn, userIdentity string, incr int64) (int, error) {
+	return redi.Int(redis.Do("INCRBY", config.Redis.Prefix+":counter:"+userIdentity, incr))
+}
+
+func getUserOnline(redis redi.Conn, userIdentity string) (int, error) {
+	return redi.Int(redis.Do("GET", config.Redis.Prefix+":counter:"+userIdentity))
 }
