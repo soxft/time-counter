@@ -1,8 +1,11 @@
 package middleware
 
 import (
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/soxft/time-counter/config"
+	"github.com/soxft/time-counter/utils/toolutil"
 )
 
 func Cors() gin.HandlerFunc {
@@ -15,5 +18,18 @@ func Cors() gin.HandlerFunc {
 			c.Writer.Header().Set("Access-Control-Max-Age", "86400")
 			c.AbortWithStatus(204)
 		}
+
+		// token
+		token := c.Request.Header.Get("Authorization")
+		if token == "" {
+			_userIp := c.ClientIP()
+			_userAgent := c.Request.UserAgent()
+			token = toolutil.GenerateToken(_userIp, _userAgent)
+			c.Writer.Header().Set("Access-Control-Expose-Headers", "Set-Token")
+			c.Writer.Header().Set("Set-Token", token)
+		} else {
+			token = strings.Replace(token, "Bearer ", "", -1)
+		}
+		c.Set("user_identity", toolutil.Md5(token))
 	}
 }

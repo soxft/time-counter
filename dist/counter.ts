@@ -6,6 +6,9 @@
         let xhr: XMLHttpRequest = new XMLHttpRequest();
 
         xhr.open('GET', 'http://localhost:8080/counter', true)
+
+        let token = localStorage.getItem("token")
+        if (token != null) xhr.setRequestHeader("Authorization", "Bearer " + token)
         xhr.onload = () => {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
@@ -14,6 +17,13 @@
                         let data = res.data;
                         document.getElementById("online_user").innerHTML = data.online_user;
                         document.getElementById("online_total").innerHTML = formatTime(data.online_total);
+                        document.getElementById("online_me").innerHTML = formatTime(data.online_me);
+
+                        // set token
+                        let setToken = xhr.getResponseHeader("Set-Token")
+                        if (token == null && setToken != null) {
+                            localStorage.setItem("token", setToken)
+                        }
                     } else {
                         console.error(res.message)
                     }

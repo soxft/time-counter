@@ -17,7 +17,10 @@ func Counter(c *gin.Context) {
 
 	_userIp := c.ClientIP()
 	_userAgent := c.Request.UserAgent()
-	userIdentity := toolutil.Md5(_userIp + ":" + _userAgent)
+	userIdentity := c.GetString("user_identity")
+	if userIdentity == "" {
+		userIdentity = toolutil.Md5(_userIp + ":" + _userAgent)
+	}
 
 	// redis
 	redis := redisutil.R.Get()
