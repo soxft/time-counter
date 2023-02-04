@@ -13,8 +13,8 @@ func Cors() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", config.Server.Cors)
 		c.Writer.Header().Set("Server", config.Server.Server)
 		if c.Request.Method == "OPTIONS" {
-			c.Writer.Header().Set("Access-Control-Allow-Methods", c.Request.Header.Get("Access-Control-Request-Method"))
-			c.Writer.Header().Set("Access-Control-Allow-Headers", "OPTION, HEAD, "+c.Request.Header.Get("Access-Control-Request-Headers"))
+			c.Writer.Header().Set("Access-Control-Allow-Methods", "OPTION, HEAD, "+c.Request.Header.Get("Access-Control-Request-Method"))
+			c.Writer.Header().Set("Access-Control-Allow-Headers", c.Request.Header.Get("Access-Control-Request-Headers"))
 			c.Writer.Header().Set("Access-Control-Max-Age", "86400")
 			c.AbortWithStatus(204)
 			return
