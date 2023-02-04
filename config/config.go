@@ -12,6 +12,7 @@ var (
 	Config *ConfigStruct
 	Redis  RedisStruct
 	Server ServerStruct
+	Room   RoomStruct
 )
 
 var configPath string
@@ -31,4 +32,5 @@ func init() {
 	}
 	Redis = Config.Redis
 	Server = Config.Server
+	Room = Config.Room
 }

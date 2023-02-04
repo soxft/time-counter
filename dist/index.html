@@ -4,13 +4,40 @@
 <head>
     <title>online user test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script async interval="1000" src="/counter.js"></script>
 </head>
 
 <body style="padding: 4em">
+    <h2>SET ROOM</h2>
+    <label for="room-input">ROOMS:&emsp;</label><input type="text" id="room-input" />
+
+    <h2>online user status</h2>
     <p>online user: <span style="color: red;" id="online_user"></span></p>
     <p>my online time: <span style="color: red;" id="online_me"></span></p>
     <p>total online time: <span style="color: red;" id="online_total"></span></p>
 </body>
+<script>
+    let room = localStorage.getItem('room') || ''
+    let roomInput = document.getElementById('room-input')
+
+    roomInput.value = room
+
+    getOnlineUser()
+    roomInput.addEventListener('change', function (e) {
+       localStorage.setItem('room', e.target.value)
+       location.reload()
+    })
+
+    function getOnlineUser() {
+        //create script
+        let script = document.createElement('script')
+        script.src = '/counter.js'
+        script.async = true
+        script.id = 'online-counter'
+        script.setAttribute('interval', 500)
+        script.setAttribute('api', 'http://127.0.0.1:8080/counter')
+        script.setAttribute('room', room)
+        document.head.appendChild(script)
+    }
+</script>
 
 </html>
