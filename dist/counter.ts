@@ -1,11 +1,16 @@
 (function () {
     let current: HTMLOrSVGScriptElement = document.currentScript,
-        interval: string = current.getAttribute("interval") || "2000";
+        interval: string = current.getAttribute("interval") || "2000",
+        room: string = current.getAttribute("room") || "",
+        api: string = current.getAttribute("api") || "http://localhost:8080/counter";
 
     const loop = () => {
         let xhr: XMLHttpRequest = new XMLHttpRequest();
 
-        xhr.open('GET', 'http://localhost:8080/counter', true)
+        let url = api
+        if (room != "") url = `${api}?room=${room}`
+
+        xhr.open('GET', url, true)
 
         let token = localStorage.getItem("token")
         if (token != null) xhr.setRequestHeader("Authorization", "Bearer " + token)
@@ -24,10 +29,12 @@
                         if (token == null && setToken != null) {
                             localStorage.setItem("token", setToken)
                         }
+
+                        setTimeout(loop, parseInt(interval))
                     } else {
+                        alert(res.message)
                         console.error(res.message)
                     }
-                    setTimeout(loop, parseInt(interval))
                 }
             }
         }

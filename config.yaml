@@ -13,3 +13,9 @@ redis:
   prefix: tc
   maxIdle: 10
   maxActive: 500
+
+room:
+  whitelist:
+    - "room1"
+    - "room2"
+    - "room3"

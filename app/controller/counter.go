@@ -2,6 +2,7 @@ package controller
 
 import (
 	"log"
+	"sort"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -14,17 +15,34 @@ import (
 func Counter(c *gin.Context) {
 	api := apiutil.New(c)
 
+	// Room mechanism
+	room := c.Query("room")
+
+	// check if room in white list
+	if "" != room && !inArray(room, config.Room.Whitelist) {
+		api.Fail("room not in white list")
+		return
+	}
+
+	var _prefix = config.Redis.Prefix
+	// set prefix
+	if "" != room {
+		_prefix += ":r_" + room
+	}
+
 	userIdentity := c.GetString("user_identity")
 
 	// redis
 	redis := redisutil.R.Get()
-	defer redis.Close()
+	defer func(redis redi.Conn) {
+		_ = redis.Close()
+	}(redis)
 
 	// static data
-	rPrefix := config.Redis.Prefix
-	counterKey := rPrefix + ":counter"
+	counterKey := _prefix + ":counter"
 	timeNow := time.Now().Unix()
 	past := timeNow - config.Server.Interval
+	counter := count{Prefix: _prefix}
 
 	// incr and get total online time
 	var last int
@@ -42,20 +60,20 @@ func Counter(c *gin.Context) {
 	var onlineUser int
 	if last != 0 {
 		incr = timeNow - int64(last)
-		if onlineTotal, err = incrTotalOnline(redis, incr); err != nil {
+		if onlineTotal, err = counter.incrTotalOnline(redis, incr); err != nil {
 			api.FailWithError("system error", err)
 			return
 		}
-		if onlineUser, err = incrUserOnline(redis, userIdentity, incr); err != nil {
+		if onlineUser, err = counter.incrUserOnline(redis, userIdentity, incr); err != nil {
 			api.FailWithError("system error", err)
 			return
 		}
 	} else {
-		if onlineTotal, err = getTotalOnline(redis); err != nil && err != redi.ErrNil {
+		if onlineTotal, err = counter.getTotalOnline(redis); err != nil && err != redi.ErrNil {
 			api.FailWithError("system error", err)
 			return
 		}
-		if onlineUser, err = getUserOnline(redis, userIdentity); err != nil && err != redi.ErrNil {
+		if onlineUser, err = counter.getUserOnline(redis, userIdentity); err != nil && err != redi.ErrNil {
 			api.FailWithError("system error", err)
 			return
 		}
@@ -78,18 +96,39 @@ func Counter(c *gin.Context) {
 	})
 }
 
-func incrTotalOnline(redis redi.Conn, incr int64) (int, error) {
-	return redi.Int(redis.Do("INCRBY", config.Redis.Prefix+":online_time", incr))
+type count struct {
+	Prefix string
 }
 
-func getTotalOnline(redis redi.Conn) (int, error) {
-	return redi.Int(redis.Do("get", config.Redis.Prefix+":online_time"))
+type counter interface {
+	incrTotalOnline(redis redi.Conn, incr int64) (int, error)
+	getTotalOnline(redis redi.Conn) (int, error)
+	incrUserOnline(redis redi.Conn, userIdentity string, incr int64) (int, error)
+	getUserOnline(redis redi.Conn, userIdentity string) (int, error)
 }
 
-func incrUserOnline(redis redi.Conn, userIdentity string, incr int64) (int, error) {
-	return redi.Int(redis.Do("INCRBY", config.Redis.Prefix+":counter:"+userIdentity, incr))
+func (c *count) incrTotalOnline(redis redi.Conn, incr int64) (int, error) {
+	return redi.Int(redis.Do("INCRBY", c.Prefix+":online_time", incr))
 }
 
-func getUserOnline(redis redi.Conn, userIdentity string) (int, error) {
-	return redi.Int(redis.Do("GET", config.Redis.Prefix+":counter:"+userIdentity))
+func (c *count) getTotalOnline(redis redi.Conn) (int, error) {
+	return redi.Int(redis.Do("get", c.Prefix+":online_time"))
+}
+
+func (c *count) incrUserOnline(redis redi.Conn, userIdentity string, incr int64) (int, error) {
+	return redi.Int(redis.Do("INCRBY", c.Prefix+":counter:"+userIdentity, incr))
+}
+
+func (c *count) getUserOnline(redis redi.Conn, userIdentity string) (int, error) {
+	return redi.Int(redis.Do("GET", c.Prefix+":counter:"+userIdentity))
+}
+
+func inArray(str string, strArray []string) bool {
+	sort.Strings(strArray)
+	i := sort.SearchStrings(strArray, str)
+	if i < len(strArray) && strArray[i] == str {
+		return true
+	} else {
+		return false
+	}
 }
