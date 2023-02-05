@@ -10,13 +10,14 @@ var (
 	roomChan       chan string
 )
 
-func init() {
+func Init() {
 	roomChan = make(chan string, 2)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
 				log.Println("global.init() error: " + err.(string))
 			}
+			Init()
 		}()
 
 		for _room := range roomChan {
