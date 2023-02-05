@@ -3,7 +3,6 @@ package config
 type ConfigStruct struct {
 	Server ServerStruct `yaml:"server"`
 	Redis  RedisStruct  `yaml:"redis"`
-	Room   RoomStruct   `yaml:"room"`
 }
 
 type RedisStruct struct {
@@ -22,8 +21,4 @@ type ServerStruct struct {
 	Server   string `yaml:"server"`
 	Interval int64  `yaml:"interval"`
 	Cors     string `yaml:"cors"`
-}
-
-type RoomStruct struct {
-	Whitelist []string `yaml:"whitelist"`
 }

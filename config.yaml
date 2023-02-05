@@ -1,5 +1,5 @@
 server:
-  address: 0.0.0.0:8080
+  address: 127.0.0.1:8080
   debug: true
   log: true
   server: "time-counter"
@@ -13,9 +13,3 @@ redis:
   prefix: tc
   maxIdle: 10
   maxActive: 500
-
-room:
-  whitelist:
-    - "room1"
-    - "room2"
-    - "room3"

@@ -1,8 +1,8 @@
 package controller
 
 import (
+	"github.com/soxft/time-counter/global"
 	"log"
-	"sort"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -19,16 +19,18 @@ func Counter(c *gin.Context) {
 	room := c.Query("room")
 
 	// check if room in white list
-	if "" != room && !inArray(room, config.Room.Whitelist) {
-		api.Fail("room not in white list")
+	if len(room) >= 10 {
+		api.Fail("room must less than 10 characters")
 		return
 	}
 
-	var _prefix = config.Redis.Prefix
 	// set prefix
+	var _prefix = config.Redis.Prefix
 	if "" != room {
 		_prefix += ":r_" + room
 	}
+	// 用于 crontab 清理
+	go global.InsertRoomPrefix(_prefix)
 
 	userIdentity := c.GetString("user_identity")
 
@@ -45,10 +47,9 @@ func Counter(c *gin.Context) {
 	counter := count{Prefix: _prefix}
 
 	// incr and get total online time
-	var last int
-	var incr int64
+	var last int64
 	var err error
-	if last, err = redi.Int(redis.Do("ZSCORE", counterKey, userIdentity)); err != nil {
+	if last, err = redi.Int64(redis.Do("ZSCORE", counterKey, userIdentity)); err != nil {
 		if err != redi.ErrNil {
 			log.Println(err)
 			api.Fail("system error")
@@ -58,8 +59,11 @@ func Counter(c *gin.Context) {
 
 	var onlineTotal int
 	var onlineUser int
-	if last != 0 {
-		incr = timeNow - int64(last)
+	// 增加的时间, 需与 interval 相比较
+	incr := timeNow - last
+
+	if last != 0 && incr < config.Server.Interval {
+		// 超出 interval 限制, 丢弃
 		if onlineTotal, err = counter.incrTotalOnline(redis, incr); err != nil {
 			api.FailWithError("system error", err)
 			return
@@ -121,14 +125,4 @@ func (c *count) incrUserOnline(redis redi.Conn, userIdentity string, incr int64)
 
 func (c *count) getUserOnline(redis redi.Conn, userIdentity string) (int, error) {
 	return redi.Int(redis.Do("GET", c.Prefix+":counter:"+userIdentity))
-}
-
-func inArray(str string, strArray []string) bool {
-	sort.Strings(strArray)
-	i := sort.SearchStrings(strArray, str)
-	if i < len(strArray) && strArray[i] == str {
-		return true
-	} else {
-		return false
-	}
 }
