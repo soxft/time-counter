@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>online user test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="/counter.js" async="" id="online-counter" interval="500" api="/counter" room="{{.room}}"></script>
+</head>
+
+<body style="padding: 4em">
+    <h2>SET ROOM</h2>
+    <label for="room-input">ROOMS:{{.room}}</label>
+
+    <h2>online user status</h2>
+    <p>online user: <span style="color: red;" id="online_user"></span></p>
+    <p>my online time: <span style="color: red;" id="online_me"></span></p>
+    <p>total online time: <span style="color: red;" id="online_total"></span></p>
+</body>
+</html>
