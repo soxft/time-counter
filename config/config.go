@@ -1,6 +1,5 @@
 package config
 
-import "C"
 import (
 	"flag"
 	"gopkg.in/yaml.v2"
@@ -28,8 +27,7 @@ func init() {
 		log.Fatalf("Error reading config file: %v \r\n", err.Error())
 	}
 	Config = &ConfigStruct{}
-	err = yaml.Unmarshal(data, Config)
-	if err != nil {
+	if err = yaml.Unmarshal(data, Config); err != nil {
 		log.Fatalf("Error parsing config file: %v \r\n", err.Error())
 	}
 
