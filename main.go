@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/soxft/time-counter/app/controller"
 	"github.com/soxft/time-counter/global"
 	"github.com/soxft/time-counter/process/cronutil"
 	"github.com/soxft/time-counter/process/redisutil"
@@ -13,6 +14,7 @@ func main() {
 	redisutil.Init()
 	// init cron
 	cronutil.Init()
+	controller.ReadIndex()
 	// run web service
 	webutill.Init()
 }
