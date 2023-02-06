@@ -22,5 +22,5 @@ services:
       REDIS_PWD:
       REDIS_DATABASE: 1
       REDIS_PREFIX: tc
-      API_SERVER: http://127.0.0.1:8080/counter
+      API_SERVER: http:\/\/127.0.0.1:8080\/counter
       INTERVAL: 10
