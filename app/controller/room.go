@@ -6,8 +6,6 @@ import (
 	"os"
 	"strings"
 
-	_ "embed"
-
 	"github.com/gin-gonic/gin"
 )
 
