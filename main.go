@@ -14,6 +14,7 @@ func main() {
 	redisutil.Init()
 	// init cron
 	cronutil.Init()
+	// read index2.html to memory
 	controller.ReadIndex()
 	// run web service
 	webutill.Init()

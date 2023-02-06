@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/soxft/time-counter/config"
 	"log"
 	"net/http"
 	"os"
@@ -20,7 +21,7 @@ func Room(c *gin.Context) {
 
 func ReadIndex() {
 	var err error
-	if RawFile, err = os.ReadFile("dist/index2.html"); err != nil {
-		log.Fatal("fuck no file", err)
+	if RawFile, err = os.ReadFile(config.DistPath + "/room.html"); err != nil {
+		log.Fatalf("cant find %s/room.html: %s", config.DistPath, err)
 	}
 }
